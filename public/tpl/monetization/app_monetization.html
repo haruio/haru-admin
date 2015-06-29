@@ -1,0 +1,544 @@
+<div ng-controller="MonetizationCtrl">
+<div class="bg-light lter b-b wrapper-md">
+  <h1 class="m-n font-thin h3 ">Monetization</h1>
+</div>
+
+<div class="wrapper-md " style="overflow: auto;" >
+  <div >
+    <div class="wrapper bg-white b-b">
+      <div class="row">
+        <div class="col-sm-8" >
+          <span class="h4 review-title">Nation</span>
+          <ul class="nav nav-pills nav-sm m-t-sm">
+            <li ng-class="{active: code==na.value}" ng-click="reviewReflash(na)"  ng-repeat="na in nation track by $index"><a href>{{na.nation}}</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-4 b-l">
+          <span class="h4 review-title">Duration</span>
+          <ul class="nav nav-pills nav-sm m-t-sm">
+            <div class="m-l-sm pull-right" >
+              <input type="text" name="reservation" id="reservation" class="form-control pull-right" style="width:auto;" ng-model="date"  />
+            </div>
+
+            <div class="btn-group pull-right">
+              <label class="btn btn-default" ng-init="radioModel = 'day'" ng-model="radioModel" btn-radio="'day'"> 일</label>
+              <label class="btn btn-default" ng-model="radioModel" btn-radio="'time'" uncheckable>시간</label>
+            </div>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--
+    <div class="row no-padder ">
+    -->
+<!--      <div  class="col-sm-12 ">
+        <div class="m-l-sm m-r-xl pull-right" >
+          <input type="text" name="reservation" id="reservation" class="form-control pull-right" style="width:auto;" ng-model="date"  />
+        </div>
+
+        <div class="btn-group m-r pull-right">
+          <label class="btn btn-default" ng-init="radioModel = 'day'" ng-model="radioModel" btn-radio="'day'"> 일</label>
+          <label class="btn btn-default" ng-model="radioModel" btn-radio="'time'" uncheckable>시간</label>
+        </div>
+
+      </div>-->
+<!--
+      <div class="col-sm-12">
+        <div class="h4" >국가 지정</div>
+        <div class="m-t">
+          <div ng-repeat="term in qTerms"  ng-if="term.edit == false"  class="pill blue" style="max-width:612px;">
+            <div class="term-content" ng-hide="term.edit">
+              <div class="remove-btn" ng-click="removeTerm($index);$event.stopPropagation();">×</div>
+              <div class="keyword ng-binding">
+                {{term.nation}}
+              </div>
+              <div class="term-description ng-binding">
+                {{term.area}}
+              </div>
+            </div>
+          </div>
+          <div ng-repeat="term in qTerms"  ng-if="term.edit == true" class="pill yellow edit" style="max-width: 299.5px;" ng-animate="'pillslide'"  >
+            <div ng-show="term.edit" class="search ng-isolate-scope padder" >
+              <select name="account" class="form-control m-b" style="height:100%;"
+                      selectfocus="isfocus"
+                      ng-change="selectAction(term, myOption)"
+                      ng-options="value.nation as value.nation for value in selectnation"
+                      ng-init="myOption = selectnation[0]"
+                      ng-model="myOption"
+                      ng-blur="selectblur(myOption)"
+                      >
+              </select>
+            </div>
+          </div>
+
+          <div class="pill add add-term red" ng-click="addTerm()" ng-hide="selectnation.length == 0">
+            <div class="term-content">
+              <span>+</span>
+              Add Nation
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+  </div>
+</div>
+
+<div class="wrapper-md">
+  <div >
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">Total Revenue 전체 매출</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-refresh="grapherefrash" ui-options="
+              [
+                { data: {{totalprices}}, bars: { show: true, barWidth: 0.6, fillColor: { colors: [{ opacity: 0.2 }, { opacity: 0.4}] } } }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: {{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%y.0',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">Summery Revenue 전체 매출 요약</div>
+          <div class="panel-body">
+            <div class="col-sm-9">
+              <div class="row m-l-xs">
+                <span class="h3 review-title "> {{lineticks[lineticks.length -1][1]}}</span>
+              </div>
+              <div class="row m-t b-t">
+              <div class="col-sm-3">
+                <div class="h3 review-title m-t" popover="전체매출" popover-trigger="mouseenter"> Total Revenue</div>
+                <div class="h3 text-info m-t">  ₩{{totalprices[totalprices.length -1][1]  | number : 0}}({{(totalprices[totalprices.length -1][1] - totalprices[totalprices.length -2][1]) / totalprices[totalprices.length -2][1] * 100 | number : 0}} %)</div>
+              </div>
+              <div class="col-sm-3 b-l">
+               <div class="h3 review-title m-t" popover="유저당 균 매출" popover-trigger="mouseenter"> ARPDAU</div>
+                <div class="h3 m-t">₩{{avgtotaluser[avgtotaluser.length -1][1]  | number: 0}}({{(avgtotaluser[avgtotaluser.length -1][1] - avgtotaluser[avgtotaluser.length -2][1]) / avgtotaluser[avgtotaluser.length -2][1] * 100 | number : 0}} %)</div>
+            </div>
+              <div class="col-sm-3 b-l">
+                <div class="h3 review-title m-t" popover="구매유저당 평균 매출" popover-trigger="mouseenter">ARPPDAU</div>
+                <div class="h3 m-t"> ₩{{avgprices[avgprices.length -1][1] | number: 0}}({{(avgprices[avgprices.length -1][1] - avgprices[avgprices.length -2][1]) / avgprices[avgprices.length -2][1] * 100 | number : 0}} %)</div>
+            </div>
+              <div class="col-sm-3 b-l">
+               <div class="h3 review-title m-t" popover="결제 유저 비율" popover-trigger="mouseenter"> PPU</div>
+                <div class="h3 m-t">{{avgsalesuserrates[avgsalesuserrates.length -1][1]| number : 0 }}%</div>
+              </div>
+              </div>
+
+            </div>
+            <div class="col-sm-3 b-l">
+              국가별 구매비율
+              <div ui-jq="plot" ui-options="
+              {{d3}},
+              {
+                series: { pie: { show: true, innerRadius: 0.5, stroke: { width: 0 }, label: { show: true, threshold: 0.05 } } },
+                colors: ['{{app.color.primary}}','{{app.color.info}}','{{app.color.success}}','{{app.color.warning}}','{{app.color.danger}}'],
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%s: %p.0%' }
+              }
+            " style="height:150px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">ARPDAU 유저당 평균매출</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{avgtotaluser}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 3, fill: 0 }  }
+              ],
+              {
+                colors: ['{{app.color.primary}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#aaa' },
+                  position: 'bottom',
+                  ticks: {{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">ARPPDAU 구매 유저당 평균 매출</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{avgprices}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 3, fill: 0 }  }
+              ],
+              {
+                colors: ['{{app.color.success}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: {{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">일일 결제 유저 </div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{countusers}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 3, fill: 0 }  }
+              ], 
+              {
+                colors: ['{{app.color.warning}}'],
+                series: { shadowSize: 3 },
+                xaxis:{ 
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: {{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' }, min:0 },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">결제유저 비율</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{avgsalesuserrates}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 3, fill: 0 }  }
+              ],
+              {
+                colors: ['{{app.color.danger}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: {{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' }, min:0  },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>                  
+        </div>
+      </div>
+    </div>
+    <!--
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">최초결제유저</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{d}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 5, fill: 0 }  }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: [
+                    [ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]
+                  ]
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">최초구매유저비율</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{d}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 5, fill: 0 }  }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: [
+                    [ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]
+                  ]
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+    <!--
+    <div class="row">
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">국가별 구매비율</div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              {{d3}},
+              {
+                series: { pie: { show: true, innerRadius: 0.5, stroke: { width: 0 }, label: { show: true, threshold: 0.05 } } },
+                colors: ['{{app.color.primary}}','{{app.color.info}}','{{app.color.success}}','{{app.color.warning}}','{{app.color.danger}}'],
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%s: %p.0%' }
+              }
+            " style="height:240px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">국가별 구매 데이터 </div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{d2}}, label: 'Pressure', color: '{{app.color.info}}' }
+              ],
+              {
+                bars: { show: true, barWidth: 0.6, fillColor: { colors: [{ opacity: 0.5 }, { opacity: 0.9}] }  },
+                xaxis: { font: { color: '#ccc' } },
+                yaxis: { font: { color: '#ccc' }, max: 2 },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                series: { shadowSize: 1 },
+                tooltip: true
+              }
+            " style="height:240px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">상위 매출 아이템 </div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              {{itemgraph}},
+              {
+                colors: ['{{app.color.info}}','{{app.color.primary}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks:{{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+            <div class="m-lg">
+              <table class="w-full m-r m-l item">
+                <thead>
+                  <tr>
+                    <th>순위</th>
+                    <th>아이템명</th>
+                    <th>아이템 가격</th>
+                    <th>구매건수</th>
+                    <th>매출</th>
+                    <th>비율</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="product in productlist track by $index">
+                    <td>{{$index +1}}</td>
+                    <td>{{product.productname}}</td>
+                    <td>{{product.price | number:0}}</td>
+                    <td>{{product.count | number:0}}</td>
+                    <td>{{product.total | number:0}}</td>
+                    <td>{{product.avg | number:2}}%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">최초 구매 아이템 </div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{d0_1}}, label: 'A', points: { show: true }, lines: { show: true, fill: true, fillColor: { colors: [{ opacity: 0.1 }, { opacity: 0.1}] } } }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: [
+                    [ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]
+                  ]
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">구매건수 분석 </div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+               { data: {{itemcounts}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 5, fill: 0 }  }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: {{lineticks}}
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!--
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading font-bold">WPU 주간구매유저 </div>
+          <div class="panel-body">
+            <div ui-jq="plot" ui-options="
+              [
+                { data: {{totalrevenue}}, bars: { show: true, barWidth: 0.6, fillColor: { colors: [{ opacity: 0.2 }, { opacity: 0.4}] } } }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: [
+                    [ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]
+                  ]
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading font-bold">MPU 월구매유저 </div>
+            <div class="panel-body">
+              <div ui-jq="plot" ui-options="
+              [
+                { data: {{totalrevenue}}, bars: { show: true, barWidth: 0.6, fillColor: { colors: [{ opacity: 0.2 }, { opacity: 0.4}] } } }
+              ],
+              {
+                colors: ['{{app.color.info}}'],
+                series: { shadowSize: 3 },
+                xaxis:{
+                  font: { color: '#ccc' },
+                  position: 'bottom',
+                  ticks: [
+                    [ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]
+                  ]
+                },
+                yaxis:{ font: { color: '#ccc' } },
+                grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
+                tooltip: true,
+                tooltipOpts: { content: '%x.1 is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
+              }
+            " style="height:240px" >
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+-->
+  </div>
+</div>
+</div>

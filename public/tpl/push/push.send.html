@@ -1,0 +1,167 @@
+<div class="bg-light lter b-b wrapper-md">
+    <h1 class="m-n font-thin h3">Push Notification</h1>
+</div>
+<div class="wrapper-md" ng-controller="PushNewCtrl">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading font-bold">
+                    아래 내용을 작성 후에 발송 버튼을 눌러주시면 푸시가 발송됩니다.
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="get">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label font-bold">Send To </label>
+                            <div class="col-sm-10">
+                                <select class="form-control w-md" ng-model="sendtype" ng-options="sendtype for sendtype in sendtypelist" />
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in" ng-show="sendtype == 'Unique'"></div>
+                        <div class="form-group"  ng-show="sendtype == 'Unique'">
+                            <label class="col-sm-2 control-label ">Unique</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" ng-model="uniquetype" ng-options="uniquetype for uniquetype in uniquetypelist" />
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control w-md" placeholder="input" ng-model="uniquevalue" />
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in" ng-show="sendtype == 'Channels'"></div>
+                        <div class="form-group"  ng-show="sendtype == 'Channels'">
+                            <label class="col-sm-2 control-label">Channels</label>
+                            <div ui-module="select2" class="col-sm-10">
+                                <input
+                                        type="hidden"
+                                        ui-select2="select2Options"
+                                        ng-model="list_of_string"
+                                        class="form-control w-md"
+                                        >
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in" ng-show="sendtype == 'Segments'"></div>
+                        <div class="form-group"  ng-show="sendtype == 'Segments'">
+                            <label class="col-sm-2 control-label">Segments</label>
+
+                            <div ng-repeat="segment in segments" class="col-sm-10" ng-class="{ 'col-sm-offset-2' : $index  != 0 }" style="margin-bottom: 10px">
+                                <div class="col-sm-3 no-padder">
+                                    <select class="form-control" ng-model="segment.segmenttype" ng-options="uniquetype for uniquetype in segmenttype" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-control" ng-model="segment.segmentcondition" ng-options="uniquetype for uniquetype in segmentcondition" />
+                                </div>
+                                <div class="col-sm-4 no-padder">
+                                    <input type="text" class="form-control " placeholder="" ng-model="segment.segmentvalue" />
+                                </div>
+                                <div class="col-sm-1">
+                                    <a href ng-click="close($index)">
+                                        <i class="icon-close h2 text-danger-lter" >
+                                        </i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group"  ng-show="sendtype == 'Segments'">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                            <button class='btn btn-default ' ng-click="addSegments()">Add Conditions</button>
+                            </div>
+                        </div>
+
+
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label font-bold">Message</label>
+                            <div class="col-sm-6">
+                                <div ng-show="messagetype == 0">
+                                    <textarea class="form-control" rows="5" ng-model="message" />
+                                </div>
+                                <div ng-hide="messagetype != 1">
+                                    <div class="form-group">
+                                        <div ng-repeat="keyvalue in messagekvs" class="col-sm-12" style="margin-bottom: 10px">
+                                            <div class="col-sm-4 no-padder">
+                                                <input type="text" class="form-control " placeholder="" ng-model="keyvalue.key" />
+                                            </div>
+                                            <div class="col-sm-7 padder-sm ">
+                                                <input type="text" class="form-control " placeholder="" ng-model="keyvalue.value" />
+                                            </div>
+                                            <div class="col-sm-1 padder-sm ">
+                                                <a href ng-click="messagekbClose($index)">
+                                                    <i class="icon-close h2 text-danger-lter" >
+                                                    </i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" >
+                                        <div class="col-sm-12">
+                                        <button class='btn btn-default 'ng-click="addMessagekvs()">Add Keys/Value</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-hide="messagetype != 2" >
+                                    <textarea class="form-control" rows="2" ng-model="message"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <textarea class="form-control" rows="5" ng-model="jsonmessage" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label font-bold">Data type</label>
+                          <div class="col-sm-10 btn-group" ng-init="messagetype = '0'">
+                            <label class="btn btn-sm btn-info"    ng-model="messagetype" btn-radio="'0'"><i class="fa fa-check text-active"></i> Text</label>
+                            <label class="btn btn-sm btn-primary"    ng-model="messagetype" btn-radio="'1'"><i class="fa fa-check text-active"></i> Key/Value</label>
+                            <label class="btn btn-sm btn-success" ng-model="messagetype" btn-radio="'2'"><i class="fa fa-check text-active"></i> JSON</label>
+                          </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label font-bold">Send Time</label>
+                            <div class="col-sm-10">
+                                <select  class="form-control w-md"  ng-model="sendtime" ng-options="s for s in sendtimelists" />
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"  ng-show="sendtime == 'Specific time'"></div>
+                        <div class="form-group" ng-show="sendtime == 'Specific time'">
+                            <label class="col-sm-2 control-label">Specific Time</label>
+                            <div class="col-sm-10">
+                                <div class="col-md-5 no-padder">
+                                    <p class="input-group">
+                                      <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="spdate" is-open="opened" min-date="minDate" max-date="'2099-12-31'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" ng-click="open($event)" />
+                                      <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                      </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-10 no-padder" >
+                                    <timepicker ng-model="sptime" ng-change="changed()" show-meridian="ismeridian"></timepicker>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label font-bold">Expiration Time</label>
+                            <div class="col-sm-10">
+                                <select  class="form-control w-md"  ng-model="expiration" ng-options="e for e in expirationlists" />
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button type="submit" class="btn btn-primary" ng-click="sendpush()"> Send Nofitication Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 visible-lg" style="background-size: 380px 100%;background: url(/img/lock_400.png) no-repeat;height:672px;">
+            <div class="padder-v" style="padding-top:281px;padding-left:110px;">
+                <span class="font-bold block" >{{user.currentproject.title}}</span>
+                <span class="" > {{ message | limitTo: 22 }}{{message.length > 22 ? '...' : ''}}</span>
+            </div>
+
+           <!-- <img src="/img/lock_400.png" width ="100%" />-->
+        </div>
+    </div>
+</div>
