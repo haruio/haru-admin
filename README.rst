@@ -11,7 +11,7 @@ unzip, then run:
   sbt/sbt eclipse
   sbt/sbt gen-idea
 
-
   sb/sbt xitrum-package
   ./target/script/runner haru.Boot
 ::
+
