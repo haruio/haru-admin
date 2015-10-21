@@ -103,11 +103,6 @@ angular.module('app')
                       deps: ['$ocLazyLoad',
                         function( $ocLazyLoad){
                           return $ocLazyLoad.load('js/controllers/toaster.js');
-                            //toaster').then(
-                            //  function(){
-                            //     return $ocLazyLoad.load('js/controllers/toaster.js');
-                            //  }
-                          //);
                       }]
                   }
               })
@@ -600,21 +595,16 @@ angular.module('app')
                   resolve: {
                       deps: ['$ocLazyLoad',
                           function( $ocLazyLoad){
-                           //   return $ocLazyLoad.load('ui.select').then(
-                             //     function(){
-                                      return $ocLazyLoad.load([ 'vendor/libs/moment.min.js',
-                                          'vendor/libs/jsmap.js',
-                                          'js/app/review/review.css',
-                                          'vendor/modules/ng-bs-daterangepicker/daterangepicker.js',
-                                          'vendor/modules/ng-bs-daterangepicker/daterangepicker-bs3.css',
-                                          'js/app/monetization/monetization.js',
-                                          'js/app/monetization/monetization.css',
-                                          'js/app/monetization/monetization-service.js'
-                                      ]);
-                               //   }
-                              //);
+                                  return $ocLazyLoad.load([ 'vendor/libs/moment.min.js',
+                                      'vendor/libs/jsmap.js',
+                                      'js/app/review/review.css',
+                                      'vendor/modules/ng-bs-daterangepicker/daterangepicker.js',
+                                      'vendor/modules/ng-bs-daterangepicker/daterangepicker-bs3.css',
+                                      'js/app/monetization/monetization.js',
+                                      'js/app/monetization/monetization.css',
+                                      'js/app/monetization/monetization-service.js'
+                                  ]);
                           }]
-
                   }
               })
               //app setting
